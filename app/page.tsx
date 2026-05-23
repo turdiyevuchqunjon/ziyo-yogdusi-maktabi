@@ -393,8 +393,7 @@ export default function Page() {
       <header className={`zy-header${scrolled ? ' scrolled' : ''}`}>
         <div className="zy-container zy-header-inner">
           <a href="#top" className="zy-logo">
-            <span className="zy-logo-mark">ZY</span>
-            <span className="zy-logo-text">Ziyo Yog&apos;dusi</span>
+           <img src="/logo.png" alt="Ziyo Yog'dusi" width="120" height="50" />
           </a>
           <a href="#contact" className="zy-btn">Ariza topshirish</a>
         </div>
@@ -618,8 +617,7 @@ export default function Page() {
 
           <div className="zy-footer-bottom">
             <div className="zy-logo">
-              <span className="zy-logo-mark">ZY</span>
-              <span className="zy-logo-text">Ziyo Yog&apos;dusi</span>
+               <img src="/oq.png" alt="Ziyo Yog'dusi" width="120" height="50" />
             </div>
             <p className="zy-copyright">
               © {new Date().getFullYear()} Ziyo Yog&apos;dusi maktabi. Barcha huquqlar himoyalangan.
