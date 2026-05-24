@@ -631,7 +631,7 @@ export default function Page() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.png" alt="Ziyo Yog'dusi" width="120" height="50" />
           </a>
-          <a href="#contact" className="zy-btn">Ariza topshirish</a>
+          <a href="#contact" className="zy-btn">Ma'lumot uchun</a>
         </div>
       </header>
 
@@ -641,7 +641,7 @@ export default function Page() {
           <div className="zy-container">
             <div className="zy-badge">
               <span className="zy-badge-dot" />
-              2015-yildan beri · Litsenziyalangan
+              · Litsenziyaga ega
             </div>
 
             <h1 className="zy-hero-title">
@@ -742,7 +742,7 @@ export default function Page() {
               className={`zy-reveal${formWrap.revealed ? ' zy-revealed' : ''}`}
             >
               <div className="zy-section-head">
-                <div className="zy-eyebrow">Ariza</div>
+                <div className="zy-eyebrow">Ma'lumot uchun</div>
                 <h2 className="zy-section-title">Ro&apos;yxatdan o&apos;ting</h2>
                 <p>Ma&apos;lumotlaringizni qoldiring, biz siz bilan tezda bog&apos;lanamiz</p>
               </div>
@@ -795,7 +795,7 @@ export default function Page() {
                     </>
                   ) : (
                     <>
-                      Arizani yuborish
+                      Ma'luotlarni yuborish
                       <span className="zy-arrow" aria-hidden>→</span>
                     </>
                   )}
@@ -843,7 +843,7 @@ export default function Page() {
                   </svg>
                   <span>Telefon</span>
                 </div>
-                <a className="zy-contact-value" href="tel:+998999999999">+998 99 999 99 99</a>
+                <a className="zy-contact-value" href="tel:++998770608877">+998 77 060 88 77</a>
               </div>
 
               <div className="zy-contact-item">
