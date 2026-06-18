@@ -65,12 +65,11 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 2. AmoCRM — fire and forget (lead muvaffaqiyatli bo'lsa, AmoCRM fail bo'lsa ham OK qaytaramiz)
-  sendToAmoCrm({ name, phone, grade, sourceUrl: body.sourceUrl }).then((r) => {
-    if (!r.ok) console.error('[AmoCRM error]', r.error);
-  });
-
-  // 3. Meta CAPI — fire and forget (lead muvaffaqiyatli bo'lsa, CAPI fail bo'lsa ham OK qaytaramiz)
+  // 2. AmoCRM va 3. Meta CAPI — javobni qaytarishdan oldin KUTAMIZ (await).
+  // MUHIM: Vercel kabi serverless muhitda "fire and forget" (await qilinmagan)
+  // promise'lar javob qaytarilgandan keyin funksiya to'xtatilib, hech qachon
+  // tugamasligi mumkin — production'da AmoCRM'ga lid tushmayotgan muammoning
+  // aynan sababi shu edi.
   const eventId = body.eventId || `evt_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
   const ip =
     req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
@@ -78,26 +77,40 @@ export async function POST(req: NextRequest) {
     undefined;
   const userAgent = req.headers.get('user-agent') || undefined;
 
-  sendCapiEvent({
-    eventName: 'Lead',
-    eventId,
-    eventSourceUrl: body.sourceUrl,
-    userData: {
-      phone,
-      name,
-      fbp: body.fbp,
-      fbc: body.fbc,
-      clientIpAddress: ip,
-      clientUserAgent: userAgent,
-    },
-    customData: {
-      content_name: 'School Application',
-      content_category: 'Education',
-      grade,
-    },
-  }).then((r) => {
-    if (!r.ok) console.error('[CAPI error]', r.error);
-  });
+  const [amoResult, capiResult] = await Promise.allSettled([
+    sendToAmoCrm({ name, phone, grade, sourceUrl: body.sourceUrl }),
+    sendCapiEvent({
+      eventName: 'Lead',
+      eventId,
+      eventSourceUrl: body.sourceUrl,
+      userData: {
+        phone,
+        name,
+        fbp: body.fbp,
+        fbc: body.fbc,
+        clientIpAddress: ip,
+        clientUserAgent: userAgent,
+      },
+      customData: {
+        content_name: 'School Application',
+        content_category: 'Education',
+        grade,
+      },
+    }),
+  ]);
 
+  if (amoResult.status === 'rejected') {
+    console.error('[AmoCRM error]', amoResult.reason);
+  } else if (!amoResult.value.ok) {
+    console.error('[AmoCRM error]', amoResult.value.error);
+  }
+
+  if (capiResult.status === 'rejected') {
+    console.error('[CAPI error]', capiResult.reason);
+  } else if (!capiResult.value.ok) {
+    console.error('[CAPI error]', capiResult.value.error);
+  }
+
+  // AmoCRM/CAPI fail bo'lsa ham, lid Telegram'ga tushgani uchun foydalanuvchiga OK qaytaramiz.
   return NextResponse.json({ ok: true, eventId });
 }

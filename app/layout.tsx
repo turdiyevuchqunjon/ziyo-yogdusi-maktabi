@@ -5,7 +5,7 @@ import './globals.css';
 const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
 export const metadata: Metadata = {
-  title: "Ziyo Yog'dusi — Farzandingiz uchun eng yaxshi ta'lim makoni",
+  title: "Ziyo Yog'dusi — Farzandingiz uchun eng yaxshi ta'lim bizda",
   description:
     "2015-yildan beri faoliyat yuritayotgan litsenziyalangan maktab. Zamonaviy metodikalar, malakali o'qituvchilar va 90% OTM ga kirish ko'rsatkichi.",
   keywords: ["maktab", "Samarqand", "Pastarg'om", "ta'lim", "Ziyo Yog'dusi"],
