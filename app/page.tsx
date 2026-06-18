@@ -8,8 +8,6 @@ import { useRouter } from 'next/navigation';
 // ============================================
 const TELEGRAM_CHANNEL_URL =
   process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL_URL || 'https://t.me/ziyo_yogdusi';
-const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '';
-
 declare global {
   interface Window {
     fbq?: (...args: unknown[]) => void;
@@ -553,24 +551,9 @@ export default function Page() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => {
-    if (!META_PIXEL_ID || typeof window === 'undefined') return;
-    if (window.fbq) return;
-    const script = document.createElement('script');
-    script.async = true;
-    script.innerHTML = `
-      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '${META_PIXEL_ID}');
-      fbq('track', 'PageView');
-    `;
-    document.head.appendChild(script);
-  }, []);
+  // Meta Pixel allaqachon app/layout.tsx'da <Script> orqali to'g'ri yuklanadi.
+  // Bu yerda qo'lda document.head.appendChild() qilish React'ning <head>
+  // ustidan nazoratini buzib, /thanks'ga o'tishda removeChild xatosiga olib kelardi.
 
   const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPhone(formatPhone(e.target.value));
