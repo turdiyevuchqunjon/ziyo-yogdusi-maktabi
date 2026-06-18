@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendToTelegram } from '@/lib/telegram';
 import { sendCapiEvent } from '@/lib/meta-capi';
+import { sendToAmoCrm } from '@/lib/amocrm';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -64,7 +65,12 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 2. Meta CAPI — fire and forget (lead muvaffaqiyatli bo'lsa, CAPI fail bo'lsa ham OK qaytaramiz)
+  // 2. AmoCRM — fire and forget (lead muvaffaqiyatli bo'lsa, AmoCRM fail bo'lsa ham OK qaytaramiz)
+  sendToAmoCrm({ name, phone, grade, sourceUrl: body.sourceUrl }).then((r) => {
+    if (!r.ok) console.error('[AmoCRM error]', r.error);
+  });
+
+  // 3. Meta CAPI — fire and forget (lead muvaffaqiyatli bo'lsa, CAPI fail bo'lsa ham OK qaytaramiz)
   const eventId = body.eventId || `evt_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
   const ip =
     req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
@@ -72,7 +78,6 @@ export async function POST(req: NextRequest) {
     undefined;
   const userAgent = req.headers.get('user-agent') || undefined;
 
-  // CAPI'ni await qilamiz, lekin xato yuzaga kelsa ham javob beramiz
   sendCapiEvent({
     eventName: 'Lead',
     eventId,
